@@ -1,0 +1,18 @@
+# Local mise configuration overrides
+# Copy this file to .mise.local.toml and customize as needed
+
+# Example: Override tool versions
+# [tools]
+# elixir = "1.17.0"
+# erlang = "27.0"
+
+# Example: Add local environment variables
+# [env]
+# OPENAI_API_KEY = "your-api-key-here"
+# ANTHROPIC_API_KEY = "your-api-key-here"
+# DATABASE_URL = "postgresql://custom_user:password@localhost:5432/elixir_chain_dev"
+
+# Example: Custom tasks
+# [tasks.my-task]
+# description = "My custom task"
+# run = "echo 'Running custom task...'"

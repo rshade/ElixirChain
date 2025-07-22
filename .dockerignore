@@ -1,0 +1,47 @@
+# Dependencies
+/deps
+/doc
+/_build
+
+# Development files
+.elixir_ls
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Test files
+/cover
+/test
+/screenshots
+/test_results
+
+# Git
+.git
+.gitignore
+
+# Mise/Environment
+.mise.local.toml
+.mise/
+.env
+.env.local
+
+# Temporary files
+/tmp
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Documentation source
+*.md
+!README.md
+
+# CI/CD
+.github
+.gitlab-ci.yml
+
+# Development databases
+/priv/repo/seeds_dev.exs

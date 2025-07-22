@@ -8,3 +8,39 @@ erl_crash.dump
 *.beam
 /config/*.secret.exs
 .elixir_ls/
+
+# Mise
+.mise.local.toml
+.mise/
+
+# Development databases
+/tmp/postgres/
+/tmp/*.log
+
+# Environment files
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test artifacts
+/screenshots/
+/test_results/
+
+# Documentation
+/doc/
+/priv/static/doc/
+
+# Dialyzer
+/priv/plts/*.plt
+/priv/plts/*.plt.hash
+elixir_chain_design_doc.md

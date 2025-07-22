@@ -1,0 +1,108 @@
+# ElixirChain tool version management with mise
+# https://mise.jdx.dev/
+
+[tools]
+# Erlang/OTP version
+erlang = "26.2.5"
+
+# Elixir version
+elixir = "1.16.3"
+
+# Node.js for any JavaScript tooling (e.g., for Phoenix LiveView)
+node = "20.15.0"
+
+# PostgreSQL for development database
+postgres = "16.3"
+
+# Redis for caching layer
+redis = "7.2.5"
+
+# Python for any ML/AI tooling or scripts
+python = "3.12.4"
+
+[env]
+# Environment variables for development
+MIX_HOME = "~/.mix"
+HEX_HOME = "~/.hex"
+LANG = "en_US.UTF-8"
+LC_ALL = "en_US.UTF-8"
+
+# PostgreSQL configuration
+PGDATA = "./tmp/postgres"
+PGHOST = "localhost"
+PGPORT = "5432"
+PGUSER = "postgres"
+PGPASSWORD = "postgres"
+DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/elixir_chain_dev"
+
+# Redis configuration
+REDIS_URL = "redis://localhost:6379"
+
+# Elixir/Erlang configuration
+ERL_AFLAGS = "-kernel shell_history enabled"
+ELIXIR_ERL_OPTIONS = "+fnu"
+
+[tasks.setup]
+description = "Set up the development environment"
+run = """
+echo "Setting up ElixirChain development environment..."
+mix local.hex --force
+mix local.rebar --force
+mix archive.install hex phx_new --force
+echo "Setup complete!"
+"""
+
+[tasks.db-init]
+description = "Initialize PostgreSQL database"
+run = """
+if [ ! -d "$PGDATA" ]; then
+  echo "Initializing PostgreSQL database..."
+  initdb -D $PGDATA
+  pg_ctl -D $PGDATA -l tmp/postgres.log start
+  sleep 2
+  createdb elixir_chain_dev
+  createdb elixir_chain_test
+else
+  echo "PostgreSQL already initialized"
+fi
+"""
+
+[tasks.services-start]
+description = "Start development services (PostgreSQL, Redis)"
+run = """
+echo "Starting development services..."
+pg_ctl -D $PGDATA -l tmp/postgres.log start || echo "PostgreSQL already running"
+redis-server --daemonize yes || echo "Redis already running"
+echo "Services started!"
+"""
+
+[tasks.services-stop]
+description = "Stop development services"
+run = """
+echo "Stopping development services..."
+pg_ctl -D $PGDATA stop || echo "PostgreSQL not running"
+redis-cli shutdown || echo "Redis not running"
+echo "Services stopped!"
+"""
+
+[tasks.services-status]
+description = "Check status of development services"
+run = """
+echo "PostgreSQL status:"
+pg_ctl -D $PGDATA status || echo "PostgreSQL not running"
+echo ""
+echo "Redis status:"
+redis-cli ping && echo "Redis is running" || echo "Redis not running"
+"""
+
+[settings]
+# Use .mise.local.toml for local overrides
+legacy_version_file = false
+experimental = true
+
+# Aliases for common commands
+[alias.e]
+elixir = ["1.16", "1.15", "1.14"]
+
+[alias.erl]
+erlang = ["26", "25", "24"]
