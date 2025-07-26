@@ -455,5 +455,220 @@ iex -S mix
 - **Sanitize tool inputs** before execution
 - **Implement rate limiting** at GenServer level
 
+## Strategic Decisions & Project Direction
+
+### LLM Provider Strategy
+**Primary Focus: Google Gemini** - As of July 2025, project direction prioritizes Gemini as the MVP LLM provider:
+
+**Strategic Reasons:**
+- **Massive Context Window**: 2M tokens enables simplified agent architecture
+- **Public API Access**: Well-documented, accessible for open-source development
+- **Multimodal Capabilities**: Future-ready for text, image, document processing
+- **Cost Effectiveness**: Excellent price-to-performance ratio for large context workloads
+- **Agent Architecture Alignment**: Large context reduces need for complex memory management
+
+**Implementation Approach:**
+- Gemini as primary/reference implementation in design phase
+- Maintain extensible architecture for future providers (OpenAI, Anthropic, local models)
+- Leverage 2M token context to simplify initial memory system design
+- Plan for multimodal tool integration (images, documents, rich media)
+
+### Documentation Strategy
+**Hybrid Approach** for API examples and documentation:
+
+**README.md Content:**
+- High-level usage patterns and inspiring examples
+- Basic configuration showing Gemini integration
+- Simple multi-agent coordination examples
+- Focus on "what" ElixirChain can do
+
+**Detailed Documentation (future):**
+- Step-by-step implementation guides
+- Authentication, error handling, rate limiting
+- Advanced tool integration patterns
+- Production deployment and scaling
+
+**Principle**: README as "product demo", detailed docs as "implementation guide"
+
+### Architecture Insights
+**Key Learnings from Design Phase:**
+
+1. **Actor Model + Large Context = Simplified Architecture**
+   - Gemini's 2M tokens reduces need for complex conversation compression
+   - Process isolation + large context = powerful agent coordination
+   - Less memory management complexity in initial implementation
+
+2. **BEAM VM Strengths for AI Agents**
+   - Process-per-agent model scales naturally
+   - Supervision trees provide automatic fault recovery
+   - Hot code swapping enables runtime agent updates
+   - Built-in distribution supports multi-node agent systems
+
+3. **Tool System Design**
+   - JSON Schema validation for security
+   - Async execution with timeout handling
+   - Multimodal return types for Gemini integration
+   - Permission systems for secure tool access
+
+## Claude Code Configuration
+
+### Specialized Agents
+ElixirChain uses specialized AI agents for different development contexts, stored in the `.claude/agents/` directory:
+
+#### Core Development Agents
+- **`code-reviewer.md`** - Expert code review with ElixirChain-specific patterns, BEAM VM optimization, and AI agent architecture validation
+- **`elixir-ai-agent-engineer.md`** - Elite Elixir engineer specializing in AI agent systems, OTP patterns, and fault-tolerant architectures
+
+#### Architecture & Coordination Agents  
+- **`distributed-systems-architect.md`** - Expert in distributed BEAM VM clusters, multi-node coordination, and scalable agent architectures
+- **`multi-agent-coordinator.md`** - Specialist in agent team formation, coordination patterns, consensus algorithms, and workflow orchestration
+- **`performance-optimizer.md`** - Expert in BEAM VM performance, memory optimization, latency reduction, and scaling to 1000+ concurrent agents
+
+#### Agent Usage Patterns
+- **Use `elixir-ai-agent-engineer`** for core framework implementation, GenServer design, LLM integration, and OTP patterns
+- **Use `code-reviewer`** for comprehensive code quality analysis with ElixirChain-specific architectural validation
+- **Use `distributed-systems-architect`** for multi-node scaling, cluster coordination, and distributed state management
+- **Use `multi-agent-coordinator`** for designing agent team structures, coordination workflows, and consensus mechanisms
+- **Use `performance-optimizer`** for system profiling, memory optimization, and scaling performance improvements
+
+### Configuration Files
+- `settings.local.json` - Claude-specific permissions and local configuration
+
+### Agent Development Insights
+
+#### Multi-Agent Coordination Patterns
+From analyzing successful AI agent frameworks and ElixirChain's unique BEAM VM advantages:
+- **Session Persistence is Critical**: Agents must survive crashes with full context recovery (differentiator from Python frameworks)
+- **Multi-Agent Communication**: Foundation for delegation, consensus, and hierarchical team patterns
+- **MCP Integration**: Native Model Context Protocol support sets ElixirChain apart from competitors
+- **Process-Per-Agent Model**: Leverages BEAM VM's unique concurrency strengths for true agent parallelism
+
+#### Agent Specialization Strategy
+Based on market research and hiring analysis:
+- **Code Review Agent**: Enhanced with ElixirChain-specific patterns, BEAM VM optimization knowledge
+- **Engineering Agent**: Deep OTP expertise, Gemini integration focus, performance targets (< 2s response, 1000+ concurrent agents)
+- **Architecture Agent**: Distributed systems expertise for multi-node clusters and fault tolerance
+- **Coordination Agent**: Multi-agent workflow patterns, consensus algorithms, team formation strategies
+- **Performance Agent**: Memory optimization, latency reduction, scaling strategies specific to AI agent workloads
+
+#### Agent Usage Best Practices
+- **Always combine agent expertise**: Use multiple agents for complex problems (e.g., `elixir-ai-agent-engineer` + `performance-optimizer`)
+- **Follow agent handoff patterns**: Structured workflow from architecture → implementation → review → optimization
+- **Leverage agent-specific knowledge**: Each agent has ElixirChain-specific technical depth and performance targets
+- **Document agent learnings**: Update CLAUDE.md with new patterns discovered during agent interactions
+
+## Development Approach
+
+### Phase 1 Priorities (Updated)
+When implementation begins, focus on:
+
+1. **Gemini Integration First**
+   - Implement `ElixirChain.LLM.Gemini` as reference provider
+   - Support 2M token context window fully
+   - Design for multimodal capabilities (future)
+
+2. **Simple Memory Management**
+   - Start with ETS-based conversation memory
+   - Leverage Gemini's large context to minimize complexity
+   - Plan for pluggable backends (PostgreSQL, Redis, vector DBs)
+
+3. **Basic Tool System**
+   - Implement core tools: web_search, calculator, file_reader
+   - Design for multimodal tool outputs
+   - JSON Schema validation and timeout handling
+
+4. **Agent Supervision**
+   - GenServer-based agents with DynamicSupervisor
+   - Automatic restart with conversation state recovery
+   - Process isolation and resource boundaries
+
+### Code Quality Standards
+**Enhanced for AI Agent Development:**
+
+- **Test LLM Integration**: Mock Gemini API for deterministic unit tests
+- **Memory Safety**: Validate all inputs before pattern matching
+- **Process Boundaries**: Clear separation between agent, memory, and tool processes
+- **Context Management**: Efficient handling of large context windows
+- **Fault Tolerance**: Design for graceful degradation when APIs fail
+
+### Future Considerations
+**Multimodal Agent Architecture:**
+- Tool outputs can include images, documents, rich media
+- Agent memory system must handle multimodal conversation history
+- Chain execution engine should support multimodal data flow
+- Consider Gemini's vision capabilities for agent tool integration
+
+## GitHub Project Management Workflows
+
+### Creating Milestones
+Use year-first milestone format for proper sorting:
+
+```bash
+# Create milestones with proper formatting
+gh api --method POST -H "Accept: application/vnd.github+json" /repos/OWNER/REPO/milestones \
+  -f title="YYYY-Q[X] - Description" \
+  -f due_on="YYYY-MM-DDT23:59:59Z" \
+  -f description="Detailed milestone description"
+```
+
+### Creating Comprehensive Issues
+Use heredoc format for multi-line issue bodies:
+
+```bash
+# Create comprehensive issues with heredoc bodies
+gh issue create --repo OWNER/REPO --title "Title" --body "$(cat <<'EOF'
+## Description
+[Detailed description with context and goals]
+
+## Acceptance Criteria
+- [ ] Specific, testable criteria with checkboxes
+- [ ] Technical implementation details
+- [ ] Integration requirements
+
+## Technical Details
+```language
+[Code examples and specifications]
+```
+
+## Related
+- Links to design docs and dependencies
+- Related issues and milestones
+EOF
+)" --label "label1" --label "label2" --milestone "Milestone Name"
+```
+
+### Project Organization Strategy
+Effective issue breakdown by development phases:
+
+- **Foundation Phase**: Core architecture, supervision trees, basic multi-agent communication
+- **Feature Phase**: MCP support, advanced coordination patterns, comprehensive tool systems
+- **Production Phase**: Distribution, performance optimization, security hardening
+- **Ecosystem Phase**: Community tools, templates, integrations
+
+### Issue Quality Standards
+Successful issue format includes:
+- Detailed acceptance criteria with checkboxes for tracking
+- Technical implementation examples in properly formatted code blocks
+- Clear relationships to other issues and design documents
+- Progressive complexity aligned with milestone dependencies
+
+## ElixirChain-Specific Architectural Insights
+
+### Critical Fault Tolerance Requirements
+- **Session Persistence is Essential**: Agents must survive crashes with full context recovery
+- **Multi-Agent Communication Patterns**: Focus on delegation, consensus, and hierarchical teams
+- **MCP Integration as Differentiator**: Native Model Context Protocol support sets ElixirChain apart
+- **Leverage Gemini's 2M Token Context**: Enables simplified memory architecture compared to other frameworks
+
+### Implementation Priorities (Session Learnings)
+1. **Session Recovery First**: Build robust persistence before complex features
+2. **Multi-Agent Foundation**: Communication infrastructure enables all advanced patterns
+3. **MCP Native Integration**: Critical for ecosystem interoperability
+4. **Progressive Feature Complexity**: Foundation → Core Features → Production → Ecosystem
+
 ## Claude's Guidance
 - **CRITICAL**: Always think systematically.
+- **NEW**: Prioritize Gemini integration patterns in code examples
+- **NEW**: Consider large context implications in memory management decisions
+- **NEW**: Design for multimodal future while starting with text-only MVP
+- **SESSION INSIGHT**: Session persistence and multi-agent communication are the core differentiators
