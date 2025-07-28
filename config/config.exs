@@ -8,7 +8,7 @@ config :elixir_chain,
     default_timeout: 30_000,
     memory_limit: :infinity
   ],
-  
+
   # LLM provider settings
   llm: [
     providers: [:openai, :anthropic, :local],
@@ -16,22 +16,23 @@ config :elixir_chain,
     retry_attempts: 3,
     timeout: 60_000
   ],
-  
+
   # Memory configuration
   memory: [
-    backend: :ets,  # Start with ETS for development
+    # Start with ETS for development
+    backend: :ets,
     vector_dimensions: 1536,
     max_conversation_length: 4000,
     compression_threshold: 8000
   ],
-  
+
   # Tool configuration
   tools: [
     enabled: [:web_search, :calculator, :file_system],
     timeout: 30_000,
     max_concurrent: 5
   ],
-  
+
   # Distributed settings
   distributed: [
     enabled: false,

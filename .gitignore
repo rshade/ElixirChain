@@ -44,3 +44,4 @@ Thumbs.db
 /priv/plts/*.plt
 /priv/plts/*.plt.hash
 elixir_chain_design_doc.md
+Github_Development_Prompt.md

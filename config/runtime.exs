@@ -23,14 +23,12 @@ if config_env() == :prod do
     api_key: System.get_env("OPENAI_API_KEY"),
     organization: System.get_env("OPENAI_ORGANIZATION")
 
-  config :elixir_chain, :anthropic,
-    api_key: System.get_env("ANTHROPIC_API_KEY")
+  config :elixir_chain, :anthropic, api_key: System.get_env("ANTHROPIC_API_KEY")
 
   # Redis configuration
   redis_url = System.get_env("REDIS_URL") || "redis://localhost:6379"
-  
-  config :elixir_chain, :redis,
-    url: redis_url
+
+  config :elixir_chain, :redis, url: redis_url
 
   # Secret key base
   secret_key_base =

@@ -85,39 +85,39 @@ defmodule ElixirChain.MixProject do
       {:telemetry, "~> 1.2"},
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"},
-      
+
       # Database
       {:ecto_sql, "~> 3.10"},
       {:postgrex, "~> 0.17"},
       {:pgvector, "~> 0.2"},
-      
+
       # Caching
       {:redix, "~> 1.3"},
       {:cachex, "~> 3.6"},
-      
+
       # Streaming
       {:gen_stage, "~> 1.2"},
       {:flow, "~> 1.2"},
       {:broadway, "~> 1.0"},
-      
+
       # HTTP and WebSockets
       {:mint, "~> 1.5"},
       {:finch, "~> 0.16"},
       {:websock_adapter, "~> 0.5"},
-      
+
       # Utilities
       {:nimble_options, "~> 1.0"},
       {:typed_struct, "~> 0.3"},
       {:retry, "~> 0.18"},
       {:timex, "~> 3.7"},
-      
+
       # Testing
       {:ex_machina, "~> 2.7", only: [:dev, :test]},
       {:mox, "~> 1.0", only: :test},
       {:bypass, "~> 2.1", only: :test},
       {:excoveralls, "~> 0.18", only: :test},
       {:mix_test_watch, "~> 1.1", only: [:dev, :test], runtime: false},
-      
+
       # Development
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.4", only: [:dev], runtime: false},

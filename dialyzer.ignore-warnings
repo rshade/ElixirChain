@@ -1,0 +1,33 @@
+# Dialyzer ignore warnings file
+# This file contains warnings that are acceptable to ignore
+# in the ElixirChain project
+
+# Common warnings for dependencies that we can't control
+# Format: file:line:warning_type:warning_description
+
+# Ignore warnings from dependencies
+:0:unknown_type:Function application will fail
+:0:unknown_function:Function application will fail
+
+# Known issues with GenStage/Flow dependencies
+deps/gen_stage
+deps/flow
+deps/broadway
+
+# Known issues with HTTP client dependencies
+deps/finch
+deps/mint
+deps/httpoison
+
+# Database dependencies
+deps/ecto
+deps/postgrex
+deps/pgvector
+
+# Cache dependencies
+deps/cachex
+deps/redix
+
+# Testing dependencies
+deps/bypass
+deps/mox

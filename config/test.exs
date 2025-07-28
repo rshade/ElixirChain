@@ -22,13 +22,13 @@ config :elixir_chain,
     providers: [:mock],
     default_provider: :mock
   ],
-  
+
   # Use in-memory storage for tests
   memory: [
     backend: :ets,
     persist: false
   ],
-  
+
   # Disable distributed features in tests
   distributed: [
     enabled: false

@@ -48,6 +48,20 @@ defmodule ElixirChain do
   alias ElixirChain.{Agent, Chain}
 
   @doc """
+  Returns the ElixirChain framework version.
+  """
+  def version do
+    Application.spec(:elixir_chain, :vsn) |> to_string()
+  end
+
+  @doc """
+  Returns the ElixirChain framework name.
+  """
+  def name do
+    "ElixirChain"
+  end
+
+  @doc """
   Starts a new agent with the given configuration.
 
   ## Options
