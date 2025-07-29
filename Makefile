@@ -1,5 +1,11 @@
 .PHONY: help ensure setup deps compile test lint format dialyzer docs clean console release docker-build docker-run db-setup db-reset db-migrate
 
+# mise exec command
+MISE_EXEC = ~/.local/bin/mise exec --
+
+# rebar3 path, dynamically determined to work across different environments
+REBAR3 = $(shell mise exec -- which rebar3 2>/dev/null || find ~/.mix -name rebar3 2>/dev/null | head -1 || echo rebar3)
+
 # Default target
 help:
 	@echo "ElixirChain Development Commands:"
@@ -41,11 +47,11 @@ ensure:
 	@echo "==> Activating mise..."
 	@mise install
 	@echo "==> Installing Hex package manager..."
-	@mix local.hex --force
+	@$(MISE_EXEC) mix local.hex --force
 	@echo "==> Installing Phoenix application generator..."
-	@mix archive.install hex phx_new --force
+	@$(MISE_EXEC) mix archive.install hex phx_new --force
 	@echo "==> Installing rebar3..."
-	@mix local.rebar --force
+	@$(MISE_EXEC) mix local.rebar --force
 	@echo "==> Installing PostgreSQL client tools..."
 	@if command -v apt-get >/dev/null 2>&1; then \
 		sudo apt-get update && sudo apt-get install -y postgresql-client; \
@@ -63,77 +69,77 @@ setup: ensure deps db-setup
 # Install/update dependencies
 deps:
 	@echo "==> Installing Elixir dependencies..."
-	@mix deps.get
-	@mix deps.compile
+	@$(MISE_EXEC) mix deps.get
+	@$(MISE_EXEC) mix deps.compile
 
 # Compile the project
 compile:
 	@echo "==> Compiling ElixirChain..."
-	@mix compile
+	@$(MISE_EXEC) mix compile
 
 # Run tests
 test:
 	@echo "==> Running tests..."
-	@MIX_ENV=test mix test
+	@MIX_ENV=test MIX_REBAR3=$(REBAR3) $(MISE_EXEC) mix test
 
 # Run tests in watch mode
 test-watch:
 	@echo "==> Running tests in watch mode..."
-	@MIX_ENV=test mix test.watch
+	@MIX_ENV=test $(MISE_EXEC) mix test.watch
 
 # Run a specific test file
 test-file:
 	@if [ -z "$(FILE)" ]; then \
 		echo "Usage: make test-file FILE=path/to/test.exs"; \
 	else \
-		MIX_ENV=test mix test $(FILE); \
+		MIX_ENV=test $(MISE_EXEC) mix test $(FILE); \
 	fi
 
 # Run code linter
 lint:
 	@echo "==> Running Credo..."
-	@mix credo --strict
+	@$(MISE_EXEC) mix credo --strict
 
 # Format code
 format:
 	@echo "==> Formatting code..."
-	@mix format
+	@$(MISE_EXEC) mix format
 
 # Check code formatting
 format-check:
 	@echo "==> Checking code formatting..."
-	@mix format --check-formatted
+	@$(MISE_EXEC) mix format --check-formatted
 
 # Run Dialyzer
 dialyzer:
 	@echo "==> Running Dialyzer..."
-	@mix dialyzer
+	@$(MISE_EXEC) mix dialyzer
 
 # Generate documentation
 docs:
 	@echo "==> Generating documentation..."
-	@mix docs
+	@$(MISE_EXEC) mix docs
 
 # Clean build artifacts
 clean:
 	@echo "==> Cleaning build artifacts..."
 	@rm -rf _build deps doc cover
-	@mix clean
+	@$(MISE_EXEC) mix clean
 
 # Start interactive console
 console:
 	@echo "==> Starting interactive console..."
-	@iex -S mix
+	@$(MISE_EXEC) iex -S mix
 
 # Create database
 db-create:
 	@echo "==> Creating database..."
-	@mix ecto.create
+	@$(MISE_EXEC) mix ecto.create
 
 # Run migrations
 db-migrate:
 	@echo "==> Running database migrations..."
-	@mix ecto.migrate
+	@$(MISE_EXEC) mix ecto.migrate
 
 # Setup database (create + migrate)
 db-setup: db-create db-migrate
@@ -142,14 +148,14 @@ db-setup: db-create db-migrate
 # Reset database
 db-reset:
 	@echo "==> Resetting database..."
-	@mix ecto.drop
-	@mix ecto.create
-	@mix ecto.migrate
+	@$(MISE_EXEC) mix ecto.drop
+	@$(MISE_EXEC) mix ecto.create
+	@$(MISE_EXEC) mix ecto.migrate
 
 # Build release
 release:
 	@echo "==> Building production release..."
-	@MIX_ENV=prod mix release
+	@MIX_ENV=prod $(MISE_EXEC) mix release
 
 # Build Docker image
 docker-build:
@@ -165,37 +171,41 @@ docker-run:
 		elixir_chain:latest
 
 # Run all checks
-check-all: format-check lint dialyzer test
+check-all: quality
 	@echo "==> All checks passed!"
+
+quality:
+	@echo "==> Running quality checks..."
+	@MIX_REBAR3=$(REBAR3) $(MISE_EXEC) mix quality
 
 # Development server
 server:
 	@echo "==> Starting development server..."
-	@mix phx.server
+	@$(MISE_EXEC) mix phx.server
 
 # Generate a new migration
 migration:
 	@if [ -z "$(NAME)" ]; then \
 		echo "Usage: make migration NAME=create_users"; \
 	else \
-		mix ecto.gen.migration $(NAME); \
+		$(MISE_EXEC) mix ecto.gen.migration $(NAME); \
 	fi
 
 # Connect to database console
 db-console:
 	@echo "==> Connecting to database console..."
-	@mix ecto.psql
+	@$(MISE_EXEC) mix ecto.psql
 
 # Show project information
 info:
 	@echo "==> Project information:"
-	@mix hex.info
+	@$(MISE_EXEC) mix hex.info
 	@echo ""
 	@echo "==> Elixir version:"
-	@elixir --version
+	@$(MISE_EXEC) elixir --version
 	@echo ""
 	@echo "==> Erlang version:"
-	@erl -eval 'erlang:display(erlang:system_info(otp_release)), halt().' -noshell
+	@$(MISE_EXEC) erl -eval 'erlang:display(erlang:system_info(otp_release)), halt().' -noshell
 
 # Install git hooks
 install-hooks:
@@ -206,20 +216,20 @@ install-hooks:
 # Update dependencies
 update-deps:
 	@echo "==> Updating dependencies..."
-	@mix deps.update --all
+	@$(MISE_EXEC) mix deps.update --all
 
 # Check for outdated dependencies
 outdated:
 	@echo "==> Checking for outdated dependencies..."
-	@mix hex.outdated
+	@$(MISE_EXEC) mix hex.outdated
 
 # Security audit
 security:
 	@echo "==> Running security audit..."
-	@mix deps.audit
+	@$(MISE_EXEC) mix deps.audit
 
 # Coverage report
 coverage:
 	@echo "==> Generating coverage report..."
-	@MIX_ENV=test mix coveralls.html
+	@MIX_ENV=test $(MISE_EXEC) mix coveralls.html
 	@echo "==> Coverage report generated at cover/excoveralls.html"

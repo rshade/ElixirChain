@@ -83,7 +83,7 @@ defmodule ElixirChain.MixProject do
       {:jason, "~> 1.4"},
       {:httpoison, "~> 2.0"},
       {:telemetry, "~> 1.2"},
-      {:telemetry_metrics, "~> 0.6"},
+      {:telemetry_metrics, "~> 1.1"},
       {:telemetry_poller, "~> 1.0"},
 
       # Database
@@ -93,7 +93,7 @@ defmodule ElixirChain.MixProject do
 
       # Caching
       {:redix, "~> 1.3"},
-      {:cachex, "~> 3.6"},
+      {:cachex, "~> 4.1"},
 
       # Streaming
       {:gen_stage, "~> 1.2"},
@@ -122,7 +122,9 @@ defmodule ElixirChain.MixProject do
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.4", only: [:dev], runtime: false},
       {:ex_doc, "~> 0.30", only: :dev, runtime: false},
-      {:observer_cli, "~> 1.7", only: :dev}
+      {:observer_cli, "~> 1.7", only: :dev},
+      {:sobelow, "~> 0.13", only: [:dev], runtime: false},
+      {:doctor, "~> 0.2.0", only: [:dev], runtime: false}
     ]
   end
 
@@ -135,7 +137,9 @@ defmodule ElixirChain.MixProject do
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
       "test.watch": ["test.watch --exclude integration"],
       "deps.audit": ["deps.unlock --check-unused", "hex.audit"],
-      quality: ["format --check-formatted", "credo --strict", "dialyzer"],
+      quality: ["format --check-formatted", "credo --strict", "dialyzer", "sobelow", "doctor"],
+      sobelow: ["sobelow --config"],
+      doctor: ["doctor --ignore-mods-file .doctor_ignore.exs"],
       docs: ["docs --formatter html --output doc/"]
     ]
   end
