@@ -78,6 +78,12 @@ make coverage      # Generate test coverage report
 ### Available Make Targets
 Run `make help` to see all available commands with descriptions.
 
+### Task Completion Requirements
+**CRITICAL**: Before completing any development task, always run:
+1. `make format` - Format all code
+2. `make lint` - Run Credo linter 
+3. `make test` - Verify all tests pass
+
 ## Implementation Status
 
 **Current State**: Design phase - no Elixir implementation exists yet. The comprehensive design document should be the primary reference.
@@ -665,6 +671,31 @@ Successful issue format includes:
 2. **Multi-Agent Foundation**: Communication infrastructure enables all advanced patterns
 3. **MCP Native Integration**: Critical for ecosystem interoperability
 4. **Progressive Feature Complexity**: Foundation → Core Features → Production → Ecosystem
+
+## Troubleshooting
+
+### rebar3 command not found
+
+If you encounter an error like `(ErlangError) Erlang error: :enoent` when running `mix test`, it's likely that the path to the `rebar3` executable is not being resolved correctly. This can happen if the path contains a tilde (`~`), which is not always expanded in all shell contexts.
+
+To fix this, you can set the `MIX_REBAR3` environment variable to the absolute path of the `rebar3` executable. You can find the path to `rebar3` by running `find ~/.mix -name rebar3`.
+
+For example:
+
+```bash
+# Use the dynamically discovered rebar3 path from the Makefile
+MIX_REBAR3="$(make --quiet print-REBAR3)" mise exec -- mix test
+```
+
+To make this change permanent, you can add the following to your `Makefile`:
+
+```makefile
+REBAR3 = $(shell mise exec -- which rebar3 2>/dev/null || find ~/.mix -name rebar3 2>/dev/null | head -1 || echo rebar3)
+
+test:
+    @echo "==> Running tests..."
+    @MIX_ENV=test MIX_REBAR3=$(REBAR3) $(MISE_EXEC) mix test
+```
 
 ## Claude's Guidance
 - **CRITICAL**: Always think systematically.
