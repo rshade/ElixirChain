@@ -666,6 +666,30 @@ Successful issue format includes:
 3. **MCP Native Integration**: Critical for ecosystem interoperability
 4. **Progressive Feature Complexity**: Foundation → Core Features → Production → Ecosystem
 
+## Troubleshooting
+
+### rebar3 command not found
+
+If you encounter an error like `(ErlangError) Erlang error: :enoent` when running `mix test`, it's likely that the path to the `rebar3` executable is not being resolved correctly. This can happen if the path contains a tilde (`~`), which is not always expanded in all shell contexts.
+
+To fix this, you can set the `MIX_REBAR3` environment variable to the absolute path of the `rebar3` executable. You can find the path to `rebar3` by running `find ~/.mix -name rebar3`.
+
+For example:
+
+```bash
+MIX_REBAR3="/home/rshade/.mix/elixir/1-18-otp-28/rebar3" mise exec -- mix test
+```
+
+To make this change permanent, you can add the following to your `Makefile`:
+
+```makefile
+REBAR3 = /home/rshade/.mix/elixir/1-18-otp-28/rebar3
+
+test:
+	@echo "==> Running tests..."
+	@MIX_ENV=test MIX_REBAR3=$(REBAR3) $(MISE_EXEC) mix test
+```
+
 ## Claude's Guidance
 - **CRITICAL**: Always think systematically.
 - **NEW**: Prioritize Gemini integration patterns in code examples
