@@ -45,7 +45,7 @@ defmodule ElixirChain do
   - **Chain Engine**: Composable execution patterns
   """
 
-  alias ElixirChain.{Agent, Chain}
+  alias ElixirChain.Agent
 
   @doc """
   Returns the ElixirChain framework version.
@@ -99,12 +99,15 @@ defmodule ElixirChain do
       {:ok, response} = ElixirChain.chat(agent, "What's the weather?")
 
   """
-  def chat(agent, message, opts \\ []) do
-    Agent.chat(agent, message, opts)
+  def chat(agent, message) do
+    Agent.chat(agent, message)
   end
 
   @doc """
   Sends a message to an agent and receives a streaming response.
+
+  **Note: This feature is not yet implemented in the new agent-based architecture.**
+  Currently returns `{:error, :not_implemented}`.
 
   Returns a stream that yields response chunks as they arrive.
 
@@ -116,8 +119,8 @@ defmodule ElixirChain do
       end
 
   """
-  def chat_stream(agent, message, opts \\ []) do
-    Agent.chat_stream(agent, message, opts)
+  def chat_stream(_agent, _message, _opts \\ []) do
+    {:error, :not_implemented}
   end
 
   @doc """
@@ -128,8 +131,8 @@ defmodule ElixirChain do
       :ok = ElixirChain.add_tool(agent, MyCustomTool)
 
   """
-  def add_tool(agent, tool_module) do
-    Agent.add_tool(agent, tool_module)
+  def add_tool(_agent, _tool_module) do
+    {:error, :not_implemented}
   end
 
   @doc """
@@ -140,8 +143,8 @@ defmodule ElixirChain do
       :ok = ElixirChain.remove_tool(agent, :calculator)
 
   """
-  def remove_tool(agent, tool_name) do
-    Agent.remove_tool(agent, tool_name)
+  def remove_tool(_agent, _tool_name) do
+    {:error, :not_implemented}
   end
 
   @doc """
@@ -152,8 +155,8 @@ defmodule ElixirChain do
       :ok = ElixirChain.clear_memory(agent)
 
   """
-  def clear_memory(agent) do
-    Agent.clear_memory(agent)
+  def clear_memory(_agent) do
+    {:error, :not_implemented}
   end
 
   @doc """
@@ -164,8 +167,8 @@ defmodule ElixirChain do
       history = ElixirChain.get_conversation_history(agent)
 
   """
-  def get_conversation_history(agent) do
-    Agent.get_conversation_history(agent)
+  def get_conversation_history(_agent) do
+    {:error, :not_implemented}
   end
 
   @doc """
@@ -178,22 +181,22 @@ defmodule ElixirChain do
       |> ElixirChain.add_tool_step(:web_search, %{query: "{{query}}"})
 
   """
-  def create_chain(opts \\ []) do
-    Chain.new(opts)
+  def create_chain(_opts \\ []) do
+    {:error, :not_implemented}
   end
 
   @doc """
   Adds an LLM step to a chain.
   """
-  def add_llm_step(chain, provider, prompt, opts \\ []) do
-    Chain.add_step(chain, {:llm, provider, prompt, opts})
+  def add_llm_step(_chain, _provider, _prompt, _opts \\ []) do
+    {:error, :not_implemented}
   end
 
   @doc """
   Adds a tool step to a chain.
   """
-  def add_tool_step(chain, tool, args) do
-    Chain.add_step(chain, {:tool, tool, args})
+  def add_tool_step(_chain, _tool, _args) do
+    {:error, :not_implemented}
   end
 
   @doc """
@@ -204,8 +207,8 @@ defmodule ElixirChain do
       {:ok, result} = ElixirChain.run_chain(chain, %{text: "Hello world"})
 
   """
-  def run_chain(chain, input) do
-    Chain.run(chain, input)
+  def run_chain(_chain, _input) do
+    {:error, :not_implemented}
   end
 
   @doc """
@@ -241,7 +244,7 @@ defmodule ElixirChain do
       info = ElixirChain.agent_info(agent)
 
   """
-  def agent_info(agent) do
-    Agent.get_info(agent)
+  def agent_info(_agent) do
+    {:error, :not_implemented}
   end
 end
